@@ -1,12 +1,19 @@
-const { Router} =  require('express');
+const { Router } = require('express');
 const router = Router();
+const pool = require('../db');
 
-const { getUsers, createUser, getUserById, deleteUser, updateUser } = require('../controllers/index.controller');
+router.get('/', (req, res) => {
+  res.json({ message: 'API is running 🚀' });
+});
 
-router.get('/users',getUsers);
-router.get('/users/:id',getUserById);
-router.post('/users',createUser);
-router.delete('/users/:id',deleteUser);
-router.put('/users/:id',updateUser);
+router.get('/db-test', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database connection failed' });
+  }
+});
 
 module.exports = router;
